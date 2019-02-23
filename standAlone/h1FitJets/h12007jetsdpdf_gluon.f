@@ -35,8 +35,7 @@ c  comments, etc... to C. Pascaud or F. Zomer or M. Mozer            *
       REAL*4 f(n_bin_x,n_bin_q2)               
 cKAREL      CHARACTER*(40) name                         
 cKAREL
-      CHARACTER*(80) name
-      CHARACTER*(800) lhapdfDir
+      CHARACTER*(800) name, lhapdfDir
 cKAREL
       data   ilSAVE/-1/                            
       SAVE
@@ -58,7 +57,8 @@ cKAREL       WRITE(name,282)'h12007jetsdpdf_gluon.data',icycle
 280   FORMAT(6e13.7)                               
 281   FORMAT(6e13.5)                               
 c      read(28,*)
-      read(28,280,end=9)(xl_bin(i),i=1,n_bin_x)    
+c      read(28,280,end=9)(xl_bin(i),i=1,n_bin_x)    
+      read(28,*)(xl_bin(i),i=1,n_bin_x)    
       read(28,281)(q2l_bin(i),i=1,n_bin_q2)        
       do i=1,n_bin_q2                              
       q2l_bin(i)=log(q2l_bin(i))                   
@@ -68,7 +68,7 @@ c      read(28,*)
       enddo
       enddo
       do i=1,n_bin_q2                              
-      read(28,280)(f(k,i),k=1,n_bin_x)             
+      read(28,*)(f(k,i),k=1,n_bin_x)             
       enddo                                        
 9     close(28)                                    
       endif                                        

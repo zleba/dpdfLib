@@ -1,5 +1,5 @@
 SetDesc: "H1 2007 DPDF Fit Jets"
-SetIndex: 123651
+SetIndex: 128351
 Authors: H1 Collaboration
 Reference: arXiv:0708.3217 [hep-ex]
 Format: lhagrid1
@@ -8,13 +8,13 @@ NumMembers: 1
 Particle: 2212
 Flavors: [-4, -3, -2, -1, 1, 2, 3, 4, 21]
 OrderQCD: 1
-ForcePositive: 0
+ForcePositive: 1
 FlavorScheme: fixed
 NumFlavors: 4
-XMin: 1e-05
+XMin: 1e-03
 XMax: 1
-QMin: 1
-QMax: 3162.28
+QMin: 1.4
+QMax: 42.28
 MZ: 91.1876
 MUp: 0
 MDown: 0

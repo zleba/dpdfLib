@@ -8,9 +8,10 @@ extern "C" void qcd_2006_(double *z, double *q2, int *ifit, double *XPQ, double 
 
 extern "C" void  h12006fluxerr_(double *xpom, double *t, int *Int, int *ifit, int *ipdf, int *ipom, double *flux);
 
-int main()
-{
+extern "C" void  strpriv_(double *X, double *MUF, double *xpom, double *tcut, double *XPQ); //scale muf in GeV
 
+void check2006()
+{
     //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
     DPDFset dpdf("H1_DPDF_2006B_NLO_pom");
 
@@ -39,6 +40,50 @@ int main()
         cout << imem<<" "<<newVal<< " "<< xpq[5] << " | " << xpq[5]/newVal << endl;
         //cout << imem<<" "<< flux / dpdf.getDPDF(0,imem)->fluxInt(xp, 0, 0.3) << endl;
     }
+}
+
+
+void check2007()
+{
+    //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
+    DPDFset dpdf("H1_DPDF_2007Jets_NLO_pom");
+
+    for(int id = -4; id <= 4; ++id) {
+        double z = 4.037018e-02, q2 = pow(5.656854e+00,2), xp = 0.01, tAbs = 0.3;
+        //double z = 9.999953e-04, q2 = pow(1.322876e+00,2), xp = 0.01, tAbs = 0.04;
+        //cout << dpdf.zfzQ2xpt(0, id, z, q2, xp, tAbs) << endl;
+
+        int imem = 0;
+        //double newVal = dpdf.getPDF(0,imem)->xfxQ2(id, z, q2);
+        double newVal = dpdf.zfzQ2xp(imem, id, z, q2, xp, 0, tAbs);
+
+        //H1 standAlone
+        double xpq[13];
+        double q = sqrt(q2);
+        double tcut = -tAbs;
+        strpriv_(&z, &q, &xp, &tcut, xpq); //scale muf in GeV
+
+        //qcd_2006_(&z, &q2, &ifit, xpq, f2, fl, c2, cl);
+
+        cout << imem<<" "<<newVal<< " "<< xpq[6+id] << " | " << xpq[6+id]/newVal << endl;
+    }
+    //cout << imem<<" "<< flux / dpdf.getDPDF(0,imem)->fluxInt(xp, 0, 0.3) << endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+int main()
+{
+    check2007();
+
 
     return 0;
     const LHAPDF::PDFSet set("GKG18_DPDF_FitA_NLO_pom");

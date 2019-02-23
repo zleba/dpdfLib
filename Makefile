@@ -10,8 +10,8 @@ LHAINC  = $(LHAdir)/include
 endif
 
 DPDFset.o: DPDFset.cc DPDFset.h
-	g++ -c $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ 
+	g++ -c -g $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ 
 
-testDPDF: testDPDF.cc DPDFset.o standAlone/dpdf2006.o
-	g++  $(CFLAGS)  -I$(LHAINC)  $^   -L$(LHALIBS) -lLHAPDF -Wl,-rpath=$(LHALIBS)   -o $@  -lgfortran
+testDPDF: testDPDF.cc DPDFset.o standAlone/dpdf2006.o standAlone/dpdf2007.o
+	g++ -g $(CFLAGS)  -I$(LHAINC)  $^   -L$(LHALIBS) -lLHAPDF -Wl,-rpath=$(LHALIBS)   -o $@  -lgfortran
 

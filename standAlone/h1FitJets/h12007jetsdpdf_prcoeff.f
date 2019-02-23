@@ -28,9 +28,9 @@ c     *************************************************************************
       dxpom=dble(xpom)
 
       call h12007jetsdpdf_reggeflux(0.003d0,0.d0,0.d0,a0pom,
-     &     0.d0,0.d0,1.d0,tcut,appom,b0pom,1.0d0,dp)
+     &     0.d0,0.d0,1.d0,1.d0,appom,b0pom,1.0d0,dp)
       call h12007jetsdpdf_reggeflux(0.003d0,0.d0,0.d0,a0mes,
-     &     0.d0,0.d0,1.d0,tcut,apmes,b0mes,1.0d0,dm)
+     &     0.d0,0.d0,1.d0,1.d0,apmes,b0mes,1.0d0,dm)
       normpom= 1./(0.003d0*dp)
       normmes=(1./(0.003d0*dm))*cmes
 
@@ -43,6 +43,8 @@ c     *************************************************************************
       flux_mes=flux
 
       if (first) then
+        print *,'Flux:', flux_pom
+        print *,'normpom:', normpom
         print *,'PRCOEFF: a0pom,appom,b0pom: ',a0pom,appom,b0pom
         print *,'PRCOEFF: a0mes,apmes,b0mes,cmes: ',
      &           a0mes,apmes,b0mes,cmes

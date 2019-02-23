@@ -23,7 +23,9 @@ DPDFset::DPDFset(string sn1, string sn2, string sn3)
         }
 
     for(auto sn : setNames) {
+        cout <<"Radek " <<  sn << endl;
         auto pdfs  = mkPDFs(sn);
+        cout <<"RadekAfter " <<  sn << endl;
         vector<DPDF> dpdfNow;
         for(auto &pdf : pdfs)
             dpdfNow.push_back(DPDF(pdf));

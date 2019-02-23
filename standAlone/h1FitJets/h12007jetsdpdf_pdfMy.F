@@ -163,16 +163,18 @@ c        CHM  = CHM * fluxR
 c        BOT  = 0
 c        TOP  = 0
 c        GL   = GL  * fluxR
-        XPQ(0) = XPQ(0)+GL*fluxR
-        XPQ(-1)= XPQ(-1)+SEA*fluxR
-        XPQ(-2)= XPQ(-2)+SEA*fluxR
-        XPQ(1)= XPQ(-1)+(SEA+DNV)*fluxR
-        XPQ(2)= XPQ(-2)+(SEA+UPV)*fluxR
 
-        XPQ(-3)= XPQ(-3)+STR*fluxR
-        XPQ(3) = XPQ(3)+STR*fluxR
-        XPQ(4) = XPQ(4)+CHM*fluxR
-        XPQ(-4)= XPQ(-4)+CHM*fluxR
+C Adding reggeon
+c       XPQ(0) = XPQ(0)+GL*fluxR
+c       XPQ(-1)= XPQ(-1)+SEA*fluxR
+c       XPQ(-2)= XPQ(-2)+SEA*fluxR
+c       XPQ(1)= XPQ(-1)+(SEA+DNV)*fluxR
+c       XPQ(2)= XPQ(-2)+(SEA+UPV)*fluxR
+
+c       XPQ(-3)= XPQ(-3)+STR*fluxR
+c       XPQ(3) = XPQ(3)+STR*fluxR
+c       XPQ(4) = XPQ(4)+CHM*fluxR
+c       XPQ(-4)= XPQ(-4)+CHM*fluxR
       
 c      ENDIF 
 
@@ -182,7 +184,7 @@ c      ENDIF
 
 
 
-#if 0
+#if 1
 
 c======================================================================
 c
@@ -195,7 +197,7 @@ c=====================================================================
 
 c======================================================
 c#include "pdf/pilot.h" ! include upacked below
-#if 0
+#if 1
 #endif
 #if !defined(CERNLIB_SINGLE)
 #ifndef CERNLIB_DOUBLE

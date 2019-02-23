@@ -96,11 +96,11 @@ int main()
 
             //for(int k = 0; k < 12; ++k)
             //outFile << pdf[k]<<" ";
-            for(int k = 2; k < 3+8; ++k)
-                outFile << pdf[k]<<"  ";
+            for(int k = 2; k < 3+7; ++k)
+                outFile << abs(pdf[k])<<"  ";
 
 
-            outFile <<pdf[12] << endl;
+            outFile <<abs(pdf[12]) << endl;
 
         }
     }
