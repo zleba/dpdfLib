@@ -72,26 +72,36 @@ map<string,double> string2map(string str)
     return pars;
 }
 
+double 	DPDF::flux(double xp, double tAbs) const
+{
+    return norm * flx(xp, tAbs);
+}
+
+double 	DPDF::fluxInt(double xp, double tAbsMin, double tAbsMax) const
+{
+    return norm * flxInt(xp, tAbsMin, tAbsMax);
+}
+
 
 
 double 	DPDF::zfzQ2xpt(int id, double z, double q2, double xp, double tAbs) const
 {
-    return norm * flux(xp, tAbs) * pdf->xfxQ2(id, z, q2);
+    return norm * flx(xp, tAbs) * pdf->xfxQ2(id, z, q2);
 }
 
 double 	DPDF::zfzQxpt(int id, double z, double q, double xp, double tAbs) const
 {
-    return norm * flux(xp, tAbs) * pdf->xfxQ(id, z, q);
+    return norm * flx(xp, tAbs) * pdf->xfxQ(id, z, q);
 }
 
 double 	DPDF::zfzQ2xp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const
 {
-    return norm * fluxInt(xp, tAbsMin, tAbsMax) * pdf->xfxQ2(id, z, q2);
+    return norm * flxInt(xp, tAbsMin, tAbsMax) * pdf->xfxQ2(id, z, q2);
 }
 
 double 	DPDF::zfzQxp(int id, double z, double q, double xp, double tAbsMin, double tAbsMax) const
 {
-    return norm * fluxInt(xp, tAbsMin, tAbsMax) * pdf->xfxQ(id, z, q);
+    return norm * flxInt(xp, tAbsMin, tAbsMax) * pdf->xfxQ(id, z, q);
 }
 
 
@@ -131,6 +141,15 @@ double 	DPDFset::zfzQxp(int iMem, int id, double z, double q, double xp, double 
 
 
 
+
+double getCarefully(const map<string,double> &pars, string par)
+{
+    if(!pars.count(par)) {
+        cout << "Flux parameter " << par << " is missing" << endl;
+        exit(1);
+    }
+    return pars.at(par);
+}
 
 
 
@@ -182,18 +201,18 @@ DPDF::DPDF(PDF *pdf_)
         const double dm =  rfluxRawInt(a0, ap, b0, xPomNorm,  0, tAbscutNorm);
         double  norm=(1./(xPomNorm*dm)); //xpom * flux normalized to 1 at xpom = 0.003
 
-        flux    = [=](double xPom, double tAbs) {return  norm * rfluxRaw(a0, ap, b0, xPom, tAbs);};
-        fluxInt = [=](double xPom, double tAbsMin, double tAbsMax) {return  norm * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
+        flx    = [=](double xPom, double tAbs) {return  norm * rfluxRaw(a0, ap, b0, xPom, tAbs);};
+        flxInt = [=](double xPom, double tAbsMin, double tAbsMax) {return  norm * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
     }
     //General Regge-like flux
     else if(fluxType == "Regge") {
-        double A  = pars.at("A");
-        double a0 = pars.at("alpha0");
-        double ap = pars.at("alphaP");
-        double b0 = pars.at("B");
+        double A  = getCarefully(pars, "A");
+        double a0 = getCarefully(pars, "alpha0");
+        double ap = getCarefully(pars, "alphaP");
+        double b0 = getCarefully(pars, "B0");
 
-        flux    = [=](double xPom, double tAbs) {return  A * rfluxRaw(a0, ap, b0, xPom, tAbs);};
-        fluxInt = [=](double xPom, double tAbsMin, double tAbsMax) {return  A * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
+        flx    = [=](double xPom, double tAbs) {return  A * rfluxRaw(a0, ap, b0, xPom, tAbs);};
+        flxInt = [=](double xPom, double tAbsMin, double tAbsMax) {return  A * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
     }
     else {
         cout << "Unknown FluxType : " << fluxType << endl;

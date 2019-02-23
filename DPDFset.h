@@ -25,11 +25,17 @@ class DPDF {
         double 	zfzQ2xp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
+        double 	flux(double xp, double tAbs) const;
+        double 	fluxInt(double xp, double tAbsMin, double tAbsMax) const;
+
+
+        PDF *getPDF() { return pdf;}
+
     private:
         PDF *pdf;
         double norm;
-        std::function<double(double,double)>         flux;    //Flux function
-        std::function<double(double,double,double)>  fluxInt; //Integrated flux
+        std::function<double(double,double)>         flx;    //Flux function
+        std::function<double(double,double,double)>  flxInt; //Integrated flux
 
 };
 
@@ -45,16 +51,16 @@ class DPDFset {
         double 	zfzQ2xp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
+        PDF *getPDF(int iRegge, int iMem)  { return dpdfs[iRegge][iMem].getPDF(); }
+        DPDF *getDPDF(int iRegge, int iMem) { return &dpdfs[iRegge][iMem]; }
 
 
 
 
     private:
         vector<string> setNames;
+        //Vector over regge trajectories & error eigen vectors
         vector<vector<DPDF>> dpdfs;
-        //const LHAPDF::PDFSet set("CT10nlo");
-        //vector<PDF*> pomPDF;
-        //vector<PDF*> regPDF; //posibility to have alternative reg-fluxes in sys shifts
 
 
 };

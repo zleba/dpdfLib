@@ -37,7 +37,7 @@
 
       double precision z,q2,xpq(-6:6),f2(2),fl(2),c2(2),cl(2)
       integer ifit,ipdf,ifit2,maxpdf,i
-      character*1000 alposDir,pathA, pathB
+      character*1000 lhapdfDir,pathA, pathB
 
       logical ierr
       data ierr/.false./
@@ -60,15 +60,16 @@ cKC
 cKC      WRITE(*,*)'KAREL ifit,ipdf = ',ifit,ipdf
 cKC
 
-      call getenv('ALPOS_DIR', alposDir)
-      pathA = trim(alposDir) // trim('/src/aem/h1pdf2006Err/a.data')
-      pathB = trim(alposDir) // trim('/src/aem/h1pdf2006Err/b.data')
+      call getenv('LHAPDF_DATA_PATH', lhapdfDir)
+      pathA=trim(lhapdfDir) //trim('/../standAlone/h1pdf2006Err/a.data')
+      pathB=trim(lhapdfDir) //trim('/../standAlone/h1pdf2006Err/b.data')
       
 
       if (ifit.eq.1) then
          maxpdf=32
          if (ifit.ne.ifit2) then
             WRITE(6,*) '[H12006PDF] Initializing Fit A'
+            WRITE(6,*) pathA
             call i_2006_fita
             ierr=.false.
       open(unit=1,file=pathA
