@@ -10,16 +10,24 @@ using namespace std;
 void Pars(int ifit, int ipdf, double &a0pom, double &nmes);
 static double getNorm(double a0, double ap, double b0);
 
+char fit = 'B'; 
+
 int main()
 {
 
     //Read it
 
-    vector<double> xGrid(100), q2Grid(79);
+    vector<double> xGrid(100), q2Grid; 
+    if(fit == 'A') q2Grid.resize(79); //Fit A
+    else           q2Grid.resize(76); //Fit B
+
 
     int nmem, ndef;
 
-    ifstream inFile("a.data");
+    ifstream inFile;
+    if(fit == 'A') inFile.open("a.data");
+    else           inFile.open("b.data");
+
     inFile >> nmem >> ndef;
     for(int i = 0; i < xGrid.size(); ++i) {
         inFile >> xGrid[i];
@@ -45,9 +53,9 @@ int main()
 
     //int nm = 0;
     //Write it 
-    for(int nm = 0; nm <= 32; ++nm) {
+    for(int nm = 0; nm <= nmem; ++nm) {
         string snm = (nm < 10) ? "0"+ to_string(nm) : to_string(nm);
-        ofstream outFile("../../DPDFsets/H1_DPDF_2006A_NLO_pom/H1_DPDF_2006A_NLO_pom_00"+ snm+".dat");
+        ofstream outFile("../../DPDFsets/H1_DPDF_2006"+string(1,fit)+"_NLO_pom/H1_DPDF_2006"+string(1,fit)+"_NLO_pom_00"+ snm+".dat");
 
         outFile << "PdfType: central" << endl;
         outFile << "Format: lhagrid1" << endl;
@@ -55,14 +63,15 @@ int main()
 
 
         double a0pom, nmes;
-        Pars(1, nm, a0pom, nmes);
+        int ifit = (fit - 'A') + 1;
+        Pars(ifit, nm, a0pom, nmes);
 
         double ap = 0.06;
         double b0 = 5.5;
 
         double A =  getNorm(a0pom, ap, b0);
 
-        outFile << "FluxParams: \"A = " << A << ", alpha0 = " << a0pom << ", alphaP = " << a0pom << ", B0 = " << b0 << "\"" << endl;
+        outFile << "FluxParams: \"A = " << A << ", alpha0 = " << a0pom << ", alphaP = " << ap << ", B0 = " << b0 << "\"" << endl;
         outFile << "---" << endl << scientific;
 
         outFile.precision(6);

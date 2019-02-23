@@ -65,6 +65,7 @@ c     normalization
       call rflux2006Err(0.003d0,a0,ap,b0,-1.d0,1.0d0,1,dm)
       norm=(1./(0.003d0*dm))*c
 
+c      write(*,*)'Rtest', norm, a0, ap, b0
 c     actual flux
       call rflux2006Err(xpom,a0,ap,b0,t,norm,int,flux)
 

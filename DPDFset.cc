@@ -212,7 +212,7 @@ DPDF::DPDF(PDF *pdf_)
         double b0 = getCarefully(pars, "B0");
 
         flx    = [=](double xPom, double tAbs) {return  A * rfluxRaw(a0, ap, b0, xPom, tAbs);};
-        flxInt = [=](double xPom, double tAbsMin, double tAbsMax) {return  A * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
+        flxInt = [=](double xPom, double tAbsMin, double tAbsMax) {/*cout <<"A a0 ap b0 " << A<<" "<< a0<<" "<<ap<<" "<<b0<<endl;*/ return  A * rfluxRawInt(a0, ap, b0, xPom, tAbsMin, tAbsMax);};
     }
     else {
         cout << "Unknown FluxType : " << fluxType << endl;

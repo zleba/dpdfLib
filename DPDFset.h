@@ -53,6 +53,8 @@ class DPDFset {
 
         PDF *getPDF(int iRegge, int iMem)  { return dpdfs[iRegge][iMem].getPDF(); }
         DPDF *getDPDF(int iRegge, int iMem) { return &dpdfs[iRegge][iMem]; }
+        
+        size_t size() const {if(dpdfs.size() > 0) return dpdfs[0].size();  else return 0;}
 
 
 

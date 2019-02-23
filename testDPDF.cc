@@ -12,7 +12,7 @@ int main()
 {
 
     //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
-    DPDFset dpdf("H1_DPDF_2006A_NLO_pom");
+    DPDFset dpdf("H1_DPDF_2006B_NLO_pom");
 
     int id = 1;
     double z = 1.072267e-01, q2 = pow(2.236068e+01,2), xp = 0.01, tAbs = 0.04;
@@ -21,11 +21,11 @@ int main()
 
 
 
-    for(int imem =0; imem <= 32; ++imem) {
+    for(int imem =0; imem < dpdf.size(); ++imem) {
         //double newVal = dpdf.getPDF(0,imem)->xfxQ2(id, z, q2);
         double newVal = dpdf.zfzQ2xpt(imem, id, z, q2, xp, 0.3);
         //H1 standAlone
-        int ifit = 1, ipdf =imem;
+        int ifit = 2, ipdf =imem;
         double xpq[13], f2[2], fl[2], c2[2], cl[2];
         h12006pdf_(&z, &q2, &ifit, &ipdf, xpq, f2, fl, c2, cl);
         //qcd_2006_(&z, &q2, &ifit, xpq, f2, fl, c2, cl);
@@ -36,8 +36,8 @@ int main()
         h12006fluxerr_(&xp, &t, &Int, &ifit, &ipdf, &ipom, &flux);
         xpq[5] *= flux;
 
-        //cout << imem<<" "<<newVal<< " "<< xpq[5] << " | " << xpq[5]/newVal << endl;
-        cout << imem<<" "<< flux <<" "<< dpdf.getDPDF(0,imem)->flux(xp, 0.3) << endl;
+        cout << imem<<" "<<newVal<< " "<< xpq[5] << " | " << xpq[5]/newVal << endl;
+        //cout << imem<<" "<< flux / dpdf.getDPDF(0,imem)->fluxInt(xp, 0, 0.3) << endl;
     }
 
     return 0;
