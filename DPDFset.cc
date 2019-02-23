@@ -137,10 +137,8 @@ double 	DPDFset::zfzQxp(int iMem, int id, double z, double q, double xp, double 
 
 
 
-
 static double rfluxRawInt(double a0, double ap, double b0,  double x_pom, double tAbsMin, double tAbsMax);
 static double rfluxRaw(double a0, double ap, double b0, double x_pom, double tAbs);
-
 
 
 

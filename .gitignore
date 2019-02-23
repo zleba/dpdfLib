@@ -1,2 +1,6 @@
 *.o
 lhapdf
+*~
+*.swp
+*.out
+testDPDF

@@ -6,7 +6,8 @@ using namespace std;
 int main()
 {
 
-    DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
+    //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
+    DPDFset dpdf("H1_DPDF_2006A_NLO_pom");
 
     int id = 0;
     double z = 0.1, q2 = 12, xp = 0.01, tAbs = 0.04;
