@@ -1,0 +1,30 @@
+# Example program using ZDPDF
+# FORTRAN version
+
+RM = rm -f
+MKDIR = mkdir -p -v
+SAY = @echo
+
+PROGNAME = demo_c
+CXXINCS = -I../lib
+#--- place debug info
+#DEBINFO = -D__DEBUG__
+DEBINFO =
+
+OBJ  = $(PROGNAME).o
+BIN  = $(PROGNAME).exe
+CXXFLAGS = -fexceptions -g3 $(DEBINFO) $(CXXINCS) $(DEFS) 
+LIBS =  -L ../lib -lzdpdf09
+ifneq ($(strip $(filter Windows%,$(OS))),)
+LIBS +=  -L c:/lib -lxdr
+endif
+
+.PHONY: all clean
+
+all: $(BIN)
+
+clean:
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CXX) $(OBJ) -o $(BIN) $(LIBS)

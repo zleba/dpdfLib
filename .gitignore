@@ -5,3 +5,6 @@ lhapdf
 *.out
 testDPDF
 *.swo
+*.d
+*.exe
+*.a

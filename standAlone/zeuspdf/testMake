@@ -1,0 +1,272 @@
+LOADER=gfortran
+
+#test: test.o strprivdpdfzeus.o 
+#	$(LOADER) -o $@ $^  -L./lib -lzdpdf09 
+
+#### This is a Makefile for the jet package. 
+#### !!!! WARNING: USE ONLY GNU MAKE !!!!
+####
+#### Use:
+####
+####    gmake -f Makefile [VPATH=<path>] [PDF=pdflib] <target name>
+PDF=pdflib
+####
+#### where the entries in square brackets are optional. VPATH needs
+#### to be specified when the source (fortran) files sit in a directory
+#### different from the working one. When PDF=pdflib is used, the package
+#### uses the CERN library of parton densities, instead of the library
+#### which is provided with this package. The user may need to adjust
+#### the link command to the libraries, depending on the implementation
+#### on his machine; look for the string "pdflib" in this file to easily
+#### find the place where modifications may be necessary. Finally, 
+####   <target name> = MAINPH  MAINHD  MAINHD_NUC
+#### are the name of the executables relevant to the pointlike component,
+#### the hadronic component, and the hadronic component for nuclear
+#### collisions. These executables are referred to in the documentation
+#### file as POINTLIKE, HADRONIC, and HI respectively. Notice that in
+#### the case of hadronic component no electron PDFs is linked here
+#### (such as ELPDF_GRV mentioned in the documentation file). The 
+#### modification necessary to include it is trivial
+####
+ifeq ($(shell uname),AIX)
+F77=xlf -qextname -qflttrap=overflow:zerodivide:invalid:enable -O3 -qstrict \
+#       -qautodbl=dblpad
+SYSOBJ=aix.o
+#AUTODBL=-qautodbl=dblpad
+endif
+ifeq ($(shell uname),SunOS)
+F77= f77 -fnonstd
+SYSOBJ=sun.o
+endif
+ifeq ($(shell uname),Linux)
+CC=gcc
+F77= f77 -Wall -fno-globals -fno-automatic  -fdebug-kludge
+SYSOBJ=linux.o trapfpe.o
+endif
+ifeq ($(shell uname),HP-UX)
+F77= g77 -Wall
+SYSOBJ=aix.o
+endif
+
+FORTHD=hdyjetdiffstr.for hdyjetcrs.for
+FORTHD_NUC=hdyjetdiff_nuc.for hdyjetcrs.for
+FORTPH=phyjetdiffstr.for phyjetcrs.for
+FORTUTI=jetint.for jetuti.for
+FORTNPDF= jetpdf.for elpdf_grv.for dummy.for
+FORTNPDF_NUC= jetpdf.for jetpdf_nuc.for dummy.for
+FORTPDFLIB=jetpdflibnogeny.for elpdf_grv.for dummypdf.for
+FORTPDFLIBHD=jetpdflibnogeny.for elpdf_grv.for dummyhd.for
+FORTPDFLIBHDKKMR=jetpdflibnogeny_kkmr.for elpdf_grv.for dummyhd.for
+FORTPDFLIB_NUC=jetpdflib_nuc.for
+
+SYSDEP=avi.for vax.for sun.for aix.for linux.for trapfpe.c
+
+OBJBASEHD = $(patsubst %.for,%.o,$(FORTHD)) $(SYSOBJ)
+OBJBASEHD_NUC = $(patsubst %.for,%.o,$(FORTHD_NUC)) $(SYSOBJ)
+OBJBASEPH = $(patsubst %.for,%.o,$(FORTPH)) $(SYSOBJ)
+OBJUTI = $(patsubst %.for,%.o,$(FORTUTI)) $(SYSOBJ)
+OBJNPDF= $(patsubst %.for,%.o,$(FORTNPDF))
+OBJNPDF_NUC= $(patsubst %.for,%.o,$(FORTNPDF_NUC))
+OBJPDFLIB = $(patsubst %.for,%.o,$(FORTPDFLIB))
+OBJPDFLIBHD = $(patsubst %.for,%.o,$(FORTPDFLIBHD))
+OBJPDFLIBHDKKMR = $(patsubst %.for,%.o,$(FORTPDFLIBHDKKMR))
+OBJPDFLIB_NUC = $(patsubst %.for,%.o,$(FORTPDFLIB_NUC))
+
+ifeq ($(PDF),pdflib)
+  OBJHD=$(OBJBASEHD) $(OBJUTI) $(OBJPDFLIBHD)
+  OBJHDKKMR=$(OBJBASEHD) $(OBJUTI) $(OBJPDFLIBHDKKMR)
+  OBJHD_NUC=$(OBJBASEHD_NUC) $(OBJUTI) $(OBJPDFLIB_NUC)
+  OBJPH=$(OBJBASEPH) $(OBJUTI) $(OBJPDFLIB)
+  LIBS= -L/h1/lib -lpdf8	
+  dpdf_libs = ~/h1/nlo/dpdflib06/libdpdflib.a ~/h1/nlo/dpdflib06/libqcdnum1612.a 
+#  LIBS804= -lc `cernlib pdflib804 genlib`
+else
+  OBJHD=$(OBJBASEHD) $(OBJUTI) $(OBJNPDF)
+  OBJHD_NUC=$(OBJBASEHD_NUC) $(OBJUTI) $(OBJNPDF_NUC)
+  OBJPH=$(OBJBASEPH) $(OBJUTI) $(OBJNPDF)
+  LIBS=
+  LIBS804=
+endif
+
+FOR = $(F77)
+DEBUG = -g
+
+vpath %.for ../
+vpath %.c ../
+vpath %.h ../
+
+
+%.o: %.for
+	$(FOR) $(DEBUG) $(AUTODBL) -c $^
+%.o: %.c
+	$(CC) $(DEBUG) -c $^
+
+#####################################################
+# DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr.for linked to 
+#    yjetuserstr_diff_zpom_newpt2Dbins.for ... which means diffractive
+#    analysis, zpom cut used zIP < 0.8
+#    and new binning for 2D cross sections.
+#
+# DPDFs from steering - Fit B is in library dpdflib
+#####################################################
+
+MAINHD: $(OBJHD) yjetuserstr_zeus.o strprivdpdf.o el_pdf.o 
+	$(LOADER) $(DEBUG)  -o bin/$@.str $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINPH: $(OBJPH) yjetuserstr_zeus.o strprivdpdf.o 
+	$(LOADER) $(DEBUG)  -o bin/$@.str $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINHDlo: $(OBJHD) yjetuserstr.o strprivdpdf.o el_pdf.o 
+	$(LOADER) $(DEBUG)  -o bin/$@.strlo $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINPHlo: $(OBJPH) yjetuserstr.o strprivdpdf.o 
+	$(LOADER) $(DEBUG)  -o bin/$@.strlo $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+############################################
+# DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr.for
+#
+#  H12007 DPDF Jets PUGGED IN EXTERNALLY
+#  - via code in: jets/
+############################################
+MAINHDjets: $(OBJHD) yjetuserstr_zeus.o jets/h12007jetsdpdf_pdflib_interface.o jets/h12007jetsdpdf_singlet.o jets/h12007jetsdpdf_gluon.o jets/h12007jetsdpdf_prcoeff.o jets/h12007jetsdpdf_charm.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/MAINHDjets $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINPHjets: $(OBJPH) yjetuserstr_zeus.o jets/h12007jetsdpdf_pdflib_interface.o jets/h12007jetsdpdf_singlet.o jets/h12007jetsdpdf_gluon.o jets/h12007jetsdpdf_prcoeff.o jets/h12007jetsdpdf_charm.o 
+	$(LOADER) $(DEBUG)  -o bin/MAINPHjets $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+############################################
+# INCLUSIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr_inclusive.for
+# 
+#  PDFs spec. in steering - it is in library
+############################################
+MAINHDincl: $(OBJHD) yjetuserstr_inclusive.o strprivdpdf.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINPHincl: $(OBJPH) yjetuserstr_inclusive.o strprivdpdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+
+############################################
+#  DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr.for
+#
+#  THE EXTERNALLY PLUGGED Fit B IS USED
+#  - via code in: h12006errors/ 
+#
+#  THE DPDFs PLUGGED EXTERNALLY
+#  - via code in: h12006errors/
+############################################
+MAINHDerr: $(OBJHD) yjetuserstr.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+MAINPHerr: $(OBJPH) yjetuserstr.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+
+#############################################
+#  DIFFRACTIVE CALCULATION
+#
+#  CUTS OF ZEUS ANALYSIS 
+#  - done via yjetuserstr_zeus.o
+#
+#  THE EXTERNALLY PLUGGED Fit B IS USED
+#  - via code in: h12006errors/ 
+#############################################
+MAINHDerrzeus: $(OBJHD) yjetuserstr_zeus.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+MAINPHerrzeus: $(OBJPH) yjetuserstr_zeus.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+##################################################################################
+#  DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr.for
+#
+#  THE EXTERNALLY USED Fit B IS USED
+#  - via code in: h12006errors/ 
+#
+#  PHOTON PDF IS SUPPRESSED FOR GLUON AND QUARK BY SURVIVAL PROBs - KKMR approach
+#  - it's done via $(OBJHDKKMR) ... the direct gamma calculation unchanged
+##################################################################################
+MAINHDerrkkmr: $(OBJHDKKMR) yjetuserstr.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+MAINPHerrkkmr: $(OBJPH) yjetuserstr.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+
+
+
+############################################
+#  DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED
+#  - via source code: yjetuserstr.for
+#
+#  THE EXTERNALLY USED DPDFs OF ZEUS
+#  - via code in: zeusdpdf/
+############################################
+MAINHDzeusdpdf: $(OBJHD) yjetuserstr_zeus.o zeusdpdf/strprivdpdf.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) -L./zeusdpdf/lib -lzdpdf09 $(LD_FLAGS)
+
+
+MAINPHzeusdpdf: $(OBJPH) yjetuserstr_zeus.o zeusdpdf/strprivdpdf.o 
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) -L./zeusdpdf/lib -lzdpdf09 $(LD_FLAGS)
+
+
+test: test.o strprivdpdf.o 
+	$(LOADER) $(DEBUG)  -o $@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) -L./lib -L/usr/lib/gcc/i386-redhat-linux/3.4.3 -lzdpdf09 $(LD_FLAGS)
+
+
+
+###########################################################
+#  DIFFRACTIVE CALCULATION
+#
+#  STANDARD CUTS USED but in two schemes
+#               0 <    xgamma < 0.75 
+#               0.75 < xgamma < 1 
+#  
+#  THE DPDFs PLUGGED EXTERNALLY
+#  - via code in: h12006errors/
+###########################################################
+MAINHD.resenriched: $(OBJHD) yjetuserstr_diff_zpom_resenriched.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+MAINPH.resenriched: $(OBJPH) yjetuserstr_diff_zpom_resenriched.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+MAINHD.direnriched: $(OBJHD) yjetuserstr_diff_zpom_direnriched.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o el_pdf.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+MAINPH.direnriched: $(OBJPH) yjetuserstr_diff_zpom_direnriched.o h12006errors/strprivdpdf.o h12006errors/qcd_2006.o h12006errors/lha2006fitb.o h12006errors/lha2006fita.o h12006errors/i_2006_fitb.o h12006errors/i_2006_fita.o h12006errors/h12006pdf.o h12006errors/h12006flux.o
+	$(LOADER) $(DEBUG)  -o bin/$@ $^ $(dpdf_libs) $(LIBS) -L$(CERN_LIBS) $(LD_FLAGS)
+
+
+
+JETELGEN: jetelgen.o jetpdflib.o dummyelgen.o
+	$(F77) $(DEBUG)  -o bin/$@ $^ $(myLIBS) $(LIBS) 
+
+

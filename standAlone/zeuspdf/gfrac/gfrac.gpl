@@ -1,0 +1,8 @@
+reset
+
+set grid
+set log x
+plot 'zeusD_SJ.pam' u 1:5:9 t "gluon fraction" w err
+
+pause -1 "Done."
+

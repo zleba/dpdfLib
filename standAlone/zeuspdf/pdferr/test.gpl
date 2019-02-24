@@ -1,0 +1,34 @@
+reset
+set bars 0
+
+#--- set iQ=0,1,2,3 for Q^2=6,20,60,200 GeV^2
+iQ=0
+iQ1=3
+#set xrange [0.02:]
+set yrange [0:]
+
+p=0
+set yrange [0:0.6]
+c=p+2; ce=c+4
+plot 'zeusD_SJ.dat' u 1:c:ce every :::iQ::iQ1 t 'g' w errorlines ps 0.1
+pause -1 "Next..."
+
+p=1
+set yrange [0:0.06]
+c=p+2; ce=c+4
+plot '' u 1:c:ce every :::iQ::iQ1 t 'd' w errorlines ps 0.1
+pause -1 "Next..."
+
+p=2
+set yrange [0:0.04]
+c=p+2; ce=c+4
+plot '' u 1:c:ce every :::iQ::iQ1 t 'c' w errorlines ps 0.1
+pause -1 "Next..."
+
+p=3
+set yrange [0:0.015]
+c=p+2; ce=c+4
+plot '' u 1:c:ce every :::iQ::iQ1 t 'b' w errorlines ps 0.1
+pause -1 "Done."
+
+

@@ -1,0 +1,22 @@
+# Example program using ZDPDF
+# FORTRAN version
+
+RM = rm -f
+MKDIR = mkdir -p -v
+SAY = @echo
+
+PROGNAME = demo_f
+OBJ  = $(PROGNAME).o
+BIN  = $(PROGNAME).exe
+
+LIBS =  -L ../lib -lzdpdf09
+
+.PHONY: all clean
+
+all: $(BIN)
+
+clean:
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(FC) $(OBJ) -o $(BIN) $(LIBS) -lstdc++

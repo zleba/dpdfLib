@@ -45,7 +45,6 @@ void check2006()
 
 void check2007()
 {
-    //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
     DPDFset dpdf("H1_DPDF_2007Jets_NLO_pom");
 
     for(int id = -4; id <= 4; ++id) {
@@ -70,6 +69,31 @@ void check2007()
     //cout << imem<<" "<< flux / dpdf.getDPDF(0,imem)->fluxInt(xp, 0, 0.3) << endl;
 }
 
+void checkZEUS()
+{
+    DPDFset dpdf("ZEUS_DPDF_2009SJ_NLO_pom");
+
+    for(int id = -5; id <= 5; ++id) {
+        //double z = 4.664286e-01, q2 = pow(1.350000e+00,2), xp = 0.003, tAbs = 1.0;
+        //double z = 4.664286e-01, q2 = pow(3.010956e+00,2), xp = 0.03, tAbs = 1.0;
+        //double z = 1e-05, q2 = 1.8, xp = 0.03, tAbs = 1.0;
+        double z = 0.607857, q2 =  10.8499, xp = 0.03, tAbs = 1.0;
+
+        //double z = 9.999953e-04, q2 = pow(1.322876e+00,2), xp = 0.01, tAbs = 0.04;
+        //cout << dpdf.zfzQ2xpt(0, id, z, q2, xp, tAbs) << endl;
+
+        int imem = 0;
+        double newValPom = dpdf.getPDF(0,imem)->xfxQ2(id, z, q2);
+        double newVal = dpdf.zfzQ2xp(imem, id, z, q2, xp, 0, tAbs);
+
+        cout << id <<" "<< newVal <<" "<< newValPom << endl;
+
+        //qcd_2006_(&z, &q2, &ifit, xpq, f2, fl, c2, cl);
+
+        //cout << imem<<" "<<newVal<< " "<< xpq[6+id] << " | " << xpq[6+id]/newVal << endl;
+    }
+    //cout << imem<<" "<< flux / dpdf.getDPDF(0,imem)->fluxInt(xp, 0, 0.3) << endl;
+}
 
 
 
@@ -82,7 +106,7 @@ void check2007()
 
 int main()
 {
-    check2007();
+    checkZEUS();
 
 
     return 0;

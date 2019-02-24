@@ -1,0 +1,25 @@
+reset
+
+#set log y; set yrange [1e-3:]
+
+p = 2
+set yrange [0:0.6]
+plot 'dpdfs.dat' u 1:p t "g" w l, 'test.dat' u 1:p t ""
+
+pause -1 "Next..."
+p = 3
+set yrange [0:0.06]
+plot 'dpdfs.dat' u 1:p t "d" w l, 'test.dat' u 1:p t ""
+
+pause -1 "Next..."
+p = 6
+set yrange [0:0.04]
+plot 'dpdfs.dat' u 1:p t "c" w l, 'test.dat' u 1:p t ""
+
+pause -1 "Next..."
+p = 7
+set yrange [0:0.015]
+plot 'dpdfs.dat' u 1:p t "b" w l, 'test.dat' u 1:p t ""
+
+pause -1 "Done."
+
