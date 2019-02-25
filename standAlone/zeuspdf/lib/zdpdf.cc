@@ -12,6 +12,7 @@
 #include "tblipol.h"
 #include "pion/grvpi.h"
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -143,9 +144,9 @@ void zdpdf_t::Pom(real_type zP, real_type QQ, real_type f[], int xpow) {
 
   f[0] = xfac*Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[0], Qgrid.npt, Xgrid.nx,1);
   f[1] = xfac*Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[1], Qgrid.npt, Xgrid.nx,1);
-  cout << "InterpolationG " << Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[0], Qgrid.npt, Xgrid.nx,1) << " " << fi[0][0][0] <<" "<< fi[0][1][0]<<" "<< fi[0][0][1]<< endl;
-  cout << "InterpolationQ " << Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[1], Qgrid.npt, Xgrid.nx,1) << " " << fi[1][0][0] <<" "<< fi[1][1][0]<<" "<< fi[1][0][1]<< endl;
-  cout << "xfac orgQuar" <<  xfac <<" "<< Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[1], Qgrid.npt, Xgrid.nx,1) << " " << f[1] <<" "<< fi[1][0][0] <<" "<< exp(Qgrid.tval[0]) << " "<< Xgrid.x[0]<< endl;
+  //cout << "InterpolationG " << Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[0], Qgrid.npt, Xgrid.nx,1) << " " << fi[0][0][0] <<" "<< fi[0][1][0]<<" "<< fi[0][0][1]<< endl;
+  //cout << "InterpolationQ " << Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[1], Qgrid.npt, Xgrid.nx,1) << " " << fi[1][0][0] <<" "<< fi[1][1][0]<<" "<< fi[1][0][1]<< endl;
+  //cout << "xfac orgQuar" <<  xfac <<" "<< Ipol2(t, zP, Qgrid.tval, Xgrid.x, fi[1], Qgrid.npt, Xgrid.nx,1) << " " << f[1] <<" "<< fi[1][0][0] <<" "<< exp(Qgrid.tval[0]) << " "<< Xgrid.x[0]<< endl;
   f[3] = f[2] = f[1];
   //cout << f[1];
   for(pn = 4; pn <= activeflav; pn++) {
@@ -173,9 +174,9 @@ void zdpdf_t::pi0xf(real_type x, real_type QQ, real_type f[]) {
 void zdpdf_t::fxP(real_type xP, real_type zP, real_type QQ,
     real_type f[], int xpow) {
   real_type flux = Pflux.f(xP);
-  cout <<"Radek xp " << xP << " : " << flux << endl;
   Pom(zP, QQ, f, xpow);
-  cout <<"Radek zp QQ " << zP <<" "<<QQ <<" : "<< f[0] <<" "<< f[1] <<" "<< f[2] <<" "<< f[3] <<" "<< f[4] <<  endl;
+  //cout <<"Radek zp QQ " <<setprecision(12)<< zP <<" "<<QQ <<" : "<< f[0] <<" "<< f[1] <<" "<< f[2] <<" "<< f[3] <<" "<< f[4] <<  endl;
+  //cout <<"Radek fl xp " << xP << " : " << flux << endl;
   #ifdef Z_TEST_
     for(int pn = 0; pn <= N_FLAVORS; pn++) cout << f[pn] << endl;
   #endif

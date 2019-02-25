@@ -42,7 +42,7 @@ void zdpdf_t::LoadGridsToText() {
   require(sizeof(real_type) == sizeof(double), "real_type must be double");
 
   int ErrBack = ErrInd;
-  for(ErrInd = -0; ErrInd <= 0; ++ErrInd) { 
+  for(ErrInd = -9; ErrInd <= 9; ++ErrInd) { 
   
   string gname(Label);
   if(ErrInd) {
@@ -102,7 +102,7 @@ void zdpdf_t::LoadGridsToText() {
   outFile << "---" << endl << scientific;
   outFile.precision(6);
   
-  //for(int fl = 3; fl <= 5; ++fl) {
+  for(int fl = 3; fl <= 5; ++fl) {
 
       for(int i = 0; i < Xgrid.nx; ++i) {
          outFile << Xgrid.x[i] << " ";
@@ -111,7 +111,7 @@ void zdpdf_t::LoadGridsToText() {
       outFile << endl;
       for(int i = 0; i < Qgrid.npt; ++i) {
          //cout << sqrt(exp(Qgrid.tval[i])) << " "<< Qgrid.nFlavors[i]  << endl;
-         //if(Qgrid.nFlavors[i] == fl || (i > 0 && Qgrid.nFlavors[i-1] == fl))
+         if(Qgrid.nFlavors[i] == fl || (i > 0 && Qgrid.nFlavors[i-1] == fl))
              outFile << sqrt(exp(Qgrid.tval[i])) <<  " ";
          if(!ErrInd) cout <<"t: "<< i <<" "<< exp(Qgrid.tval[i]) <<" "<< Qgrid.nFlavors[i] <<  endl;
       }
@@ -119,24 +119,25 @@ void zdpdf_t::LoadGridsToText() {
       outFile << endl;
       outFile << " -5 -4 -3 -2 -1  1  2  3  4  5  21" << endl;
 
-      for(int iq = 0; iq < Qgrid.npt; ++iq) {
-         //if(Qgrid.nFlavors[iq] == fl || (iq > 0 && Qgrid.nFlavors[iq-1] == fl)) {
-            for(int ix = 0; ix < Xgrid.nx; ++ix) {
-               //cout << iq << " "<< ix << endl;
-               //cout << exp(Qgrid.tval[iq]) <<" "<< Xgrid.x[ix] <<" : " <<  fi[0][iq][ix] << " "<<  fi[1][iq][ix] <<" " << fi[4][iq][ix] <<" "<<  fi[5][iq][ix] <<  endl;
+      for(int ix = 0; ix < Xgrid.nx; ++ix) {
+          for(int iq = 0; iq < Qgrid.npt; ++iq) {
+             if(Qgrid.nFlavors[iq] == fl || (iq > 0 && Qgrid.nFlavors[iq-1] == fl)) {
+              //cout << iq << " "<< ix << endl;
+              //cout << exp(Qgrid.tval[iq]) <<" "<< Xgrid.x[ix] <<" : " <<  fi[0][iq][ix] << " "<<  fi[1][iq][ix] <<" " << fi[4][iq][ix] <<" "<<  fi[5][iq][ix] <<  endl;
 
-               double g = fi[0][iq][ix] / (2*M_PI);
-               double q = fi[1][iq][ix] / (2*M_PI);
-               double c = Qgrid.nFlavors[iq] >= 4 ? fi[4][iq][ix]/(2*M_PI) : 0;
-               double b = Qgrid.nFlavors[iq] >= 5 ? fi[5][iq][ix]/(2*M_PI) : 0;
+              double g = fi[0][iq][ix] / (2*M_PI);
+              double q = fi[1][iq][ix] / (2*M_PI);
+              double c = Qgrid.nFlavors[iq] >= 4 ? fi[4][iq][ix]/(2*M_PI) : 0;
+              double b = Qgrid.nFlavors[iq] >= 5 ? fi[5][iq][ix]/(2*M_PI) : 0;
 
-               outFile << b <<" "<< c <<" "<< q <<" "<< q <<" "<< q<<" "<<q <<" "<< q <<" "<< q << " "<< c <<" "<< b <<" "<< g << endl;
+              outFile << b <<" "<< c <<" "<< q <<" "<< q <<" "<< q<<" "<<q <<" "<< q <<" "<< q << " "<< c <<" "<< b <<" "<< g << endl;
 
-            }
-         //}
+
+             }
+          }
       }
       outFile << "---" << endl;
-  //}
+  }
 
   outFile.close();
 
@@ -157,7 +158,7 @@ void zdpdf_t::LoadGridsToText() {
 
 
 
-  //exit(0);
+  exit(0);
 
 
 
@@ -172,7 +173,7 @@ void zdpdf_t::LoadGridsToText() {
 //==========================================================
 void zdpdf_t::LoadGrids() {
 
-  LoadGridsToText();
+  //LoadGridsToText();
 
   require(sizeof(real_type) == sizeof(double), "real_type must be double");
 
