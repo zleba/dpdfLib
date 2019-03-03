@@ -12,8 +12,7 @@
 using namespace LHAPDF;
 using namespace std;
 
-
-DPDFset::DPDFset(string sn1, string sn2, string sn3)
+void DPDFset::init(string sn1, string sn2, string sn3)
 {
     setNames = {sn1, sn2, sn3};
     for(int i = 0; i < setNames.size(); ++i)
@@ -106,6 +105,17 @@ double 	DPDF::zfzQxp(int id, double z, double q, double xp, double tAbsMin, doub
     return norm * flxInt(xp, tAbsMin, tAbsMax) * pdf->xfxQ(id, z, q);
 }
 
+void 	DPDF::zfzQ2xp (double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const
+{
+    double Flx = norm * flxInt(xp, tAbsMin, tAbsMax);
+    //vector<double> zfz(13);
+    pdf->xfxQ2(z, q2, zfz);
+    for(auto &v : zfz)
+        v *= Flx;
+}
+
+
+
 
 double 	DPDFset::zfzQ2xpt(int iMem, int id, double z, double q2, double xp, double tAbs) const
 {
@@ -139,8 +149,18 @@ double 	DPDFset::zfzQxp(int iMem, int id, double z, double q, double xp, double 
     return pdfVal;
 }
 
+void 	DPDFset::zfzQ2xp (int iMem, double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const
+{
+    zfz.resize(13, 0.0);
 
-
+    for(int i = 0; i < dpdfs.size(); ++i) {
+        vector<double> zfzTemp(13);
+        dpdfs[i][iMem].zfzQ2xp(z, q2, xp, tAbsMin, tAbsMax, zfzTemp);
+        assert(zfzTemp.size() == zfz.size());
+        for(int k = 0; k < zfz.size(); ++k)
+            zfz[k] += zfzTemp[k];
+    }
+}
 
 
 

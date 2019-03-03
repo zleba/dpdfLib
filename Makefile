@@ -10,7 +10,7 @@ LHAINC  = $(LHAdir)/include
 endif
 
 DPDFset.o: DPDFset.cc DPDFset.h
-	g++ -c -g $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ 
+	g++ -c -O2 -g $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ 
 
 testDPDF: testDPDF.cc DPDFset.o standAlone/dpdf2006.o standAlone/dpdf2007.o
 	g++ -g $(CFLAGS)  -I$(LHAINC) -IstandAlone/zeuspdf/lib  $^   -L$(LHALIBS) -lLHAPDF -Wl,-rpath=$(LHALIBS)   -LstandAlone/zeuspdf/lib  -lzdpdf09    -o $@  -lgfortran

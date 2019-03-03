@@ -25,9 +25,10 @@ class DPDF {
         double 	zfzQ2xp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
+        void 	zfzQ2xp (double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const;
+
         double 	flux(double xp, double tAbs) const;
         double 	fluxInt(double xp, double tAbsMin, double tAbsMax) const;
-
 
         PDF *getPDF() { return pdf;}
 
@@ -36,13 +37,14 @@ class DPDF {
         double norm;
         std::function<double(double,double)>         flx;    //Flux function
         std::function<double(double,double,double)>  flxInt; //Integrated flux
-
 };
 
 class DPDFset {
 
     public:
-        DPDFset(string sn1, string sn2="", string sn3="");
+        DPDFset(string sn1, string sn2="", string sn3="") { init(sn1, sn2, sn3); }
+        DPDFset() {}
+        void init(string sn1, string sn2="", string sn3="");
         
         //xfxQ2(int id, double x, double q2, double xpom, double t);
 
@@ -51,13 +53,13 @@ class DPDFset {
         double 	zfzQ2xp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
+        void 	zfzQ2xp (int iMem, double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const;
+
+
         PDF *getPDF(int iRegge, int iMem)  { return dpdfs[iRegge][iMem].getPDF(); }
         DPDF *getDPDF(int iRegge, int iMem) { return &dpdfs[iRegge][iMem]; }
         
         size_t size() const {if(dpdfs.size() > 0) return dpdfs[0].size();  else return 0;}
-
-
-
 
     private:
         vector<string> setNames;

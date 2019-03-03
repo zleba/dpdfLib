@@ -88,7 +88,7 @@ int main()
 
     for(auto x : xGrid)
         outFileReg << x<<" ";
-    outFilePom << endl;
+    outFileReg << endl;
     for(auto q2 : q2Grid)
         outFileReg << sqrt(q2) <<" ";
     outFileReg << endl;

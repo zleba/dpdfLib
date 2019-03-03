@@ -4,7 +4,7 @@ Authors: H1 Collaboration
 Reference: arXiv:hep-ex/0606004
 Format: lhagrid1
 DataVersion: 1
-NumMembers: 31
+NumMembers: 33
 Particle: 2212
 Flavors: [-4, -3, -2, -1, 1, 2, 3, 4, 21]
 OrderQCD: 1
