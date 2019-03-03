@@ -15,10 +15,10 @@ extern "C" void  strpriv_(double *X, double *MUF, double *xpom, double *tcut, do
 void check2006()
 {
     //DPDFset dpdf("GKG18_DPDF_FitA_NLO_pom");
-    DPDFset dpdf("H1_DPDF_2006B_NLO_pom");
+    DPDFset dpdf("H1_DPDF_2006B_NLO_pom", "H1_DPDF_2006B_NLO_reg");
 
     int id = 1;
-    double z = 1.072267e-01, q2 = pow(2.236068e+01,2), xp = 0.01, tAbs = 0.04;
+    double z = 1.072267e-01, q2 = pow(2.236068e+01,2), xp = 0.001, tAbs = 0.04;
     //double z = 9.999953e-04, q2 = pow(1.322876e+00,2), xp = 0.01, tAbs = 0.04;
     //cout << dpdf.zfzQ2xpt(0, id, z, q2, xp, tAbs) << endl;
 
@@ -168,7 +168,8 @@ void checkZEUS()
 
 int main()
 {
-    checkZEUS();
+    check2006();
+    //checkZEUS();
 
 
     return 0;

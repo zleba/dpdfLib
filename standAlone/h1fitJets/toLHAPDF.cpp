@@ -6,6 +6,7 @@
 
 using namespace std;
 
+vector<double>  xfxQownens(double X, double SCALE);
 
 void Pars(int ifit, int ipdf, double &a0pom, double &nmes);
 static double getNorm(double a0, double ap, double b0);
@@ -46,34 +47,56 @@ int main()
 
     //Write it 
 
-    ofstream outFile("../../DPDFsets/H1_DPDF_2007Jets_NLO_pom/H1_DPDF_2007Jets_NLO_pom_0000.dat");
+    ofstream outFilePom("../../DPDFsets/H1_DPDF_2007Jets_NLO_pom/H1_DPDF_2007Jets_NLO_pom_0000.dat");
+    outFilePom << "PdfType: central" << endl;
+    outFilePom << "Format: lhagrid1" << endl;
+    outFilePom << "FluxType: Regge" << endl;
 
-    outFile << "PdfType: central" << endl;
-    outFile << "Format: lhagrid1" << endl;
-    outFile << "FluxType: Regge" << endl;
+    ofstream outFileReg("../../DPDFsets/H1_DPDF_2007Jets_NLO_reg/H1_DPDF_2007Jets_NLO_reg_0000.dat");
+    outFileReg << "PdfType: central" << endl;
+    outFileReg << "Format: lhagrid1" << endl;
+    outFileReg << "FluxType: Regge" << endl;
 
 
-    double nmes = 0.0013; 
+    double nmes  = 0.0013; 
     double a0pom = 1.1037; 
-    double ap = 0.06;
-    double b0 = 5.5;
+    double apPom = 0.06;
+    double b0Pom = 5.5;
 
-    double A =  getNorm(a0pom, ap, b0);
+    double a0reg = 0.5; 
+    double apReg = 0.3;
+    double b0Reg = 1.6;
 
-    outFile << "FluxParams: \"A = " << A << ", alpha0 = " << a0pom << ", alphaP = " << ap << ", B0 = " << b0 << "\"" << endl;
-    outFile << "---" << endl << scientific;
 
-    outFile.precision(6);
+    double Apom =  getNorm(a0pom, apPom, b0Pom);
+    double Areg =  nmes*getNorm(a0reg, apReg, b0Reg);
+
+    outFilePom << "FluxParams: \"A = " << Apom << ", alpha0 = " << a0pom << ", alphaP = " << apPom << ", B0 = " << b0Pom << "\"" << endl;
+    outFilePom << "---" << endl << scientific;
+    outFileReg << "FluxParams: \"A = " << Areg << ", alpha0 = " << a0reg << ", alphaP = " << apReg << ", B0 = " << b0Reg << "\"" << endl;
+    outFileReg << "---" << endl << scientific;
+
+    outFilePom.precision(6);
+    outFileReg.precision(6);
 
     for(auto x : xGrid)
-        outFile << x<<" ";
-    outFile << endl;
+        outFilePom << x<<" ";
+    outFilePom << endl;
     for(auto q2 : q2Grid)
-        outFile << sqrt(q2) <<" ";
-    outFile << endl;
+        outFilePom << sqrt(q2) <<" ";
+    outFilePom << endl;
 
-    //outFile << " -6 -5 -4 -3 -2 -1  1  2  3  4  5  6 21" << endl;
-    outFile << " -4 -3 -2 -1  1  2  3  4  21" << endl;
+    for(auto x : xGrid)
+        outFileReg << x<<" ";
+    outFilePom << endl;
+    for(auto q2 : q2Grid)
+        outFileReg << sqrt(q2) <<" ";
+    outFileReg << endl;
+
+
+    //outFilePom << " -6 -5 -4 -3 -2 -1  1  2  3  4  5  6 21" << endl;
+    outFilePom << " -4 -3 -2 -1  1  2  3  4  21" << endl;
+    outFileReg << " -4 -3 -2 -1  1  2  3  4  21" << endl;
 
     for(int ix = 0; ix < xGrid.size(); ++ix) {
         for(int iq = 0; iq < q2Grid.size(); ++iq) {
@@ -95,17 +118,28 @@ int main()
             pdf[5+7] = tab[0][iq][ix]; //gluon
 
             //for(int k = 0; k < 12; ++k)
-            //outFile << pdf[k]<<" ";
+            //outFilePom << pdf[k]<<" ";
             for(int k = 2; k < 3+7; ++k)
-                outFile << abs(pdf[k])<<"  ";
+                outFilePom << abs(pdf[k])<<"  ";
 
+            outFilePom <<abs(pdf[12]) << endl;
 
-            outFile <<abs(pdf[12]) << endl;
-
+            //Reggeon
+            vector<double> xfxReg = xfxQownens(xGrid[ix], sqrt(q2Grid[iq]));
+            for(int k = 2; k < 12; ++k) {
+                if(k == 6) continue;
+                int kNow = k;
+                if(k == 11) kNow = 6; 
+                outFileReg <<xfxReg[kNow] << " ";
+            }
+            outFileReg << endl;
         }
     }
-    outFile << "---" << endl;
-    outFile.close();
+    outFilePom << "---" << endl;
+    outFilePom.close();
+
+    outFileReg << "---" << endl;
+    outFileReg.close();
 
     return 0;
 }

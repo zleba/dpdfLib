@@ -275,6 +275,7 @@ C...Calculate structure functions.
           DENOM = GAMMA(TS(1))*GAMMA(TS(2)+ONED)/GAMMA(TS(1)+TS(2)+ONED)
 #endif
 #if defined(CERNLIB_DOUBLE)
+          write(*,*) 'radek', DGAMMA(TS(1))
           DENOM = DGAMMA(TS(1))*DGAMMA(TS(2)+ONED)/
      +                                          DGAMMA(TS(1)+TS(2)+ONED)
 #endif

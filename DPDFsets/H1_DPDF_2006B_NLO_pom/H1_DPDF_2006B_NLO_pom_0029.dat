@@ -1,4 +1,4 @@
-PdfType: central
+PdfType: error
 Format: lhagrid1
 FluxType: Regge
 FluxParams: "A = 1.7765, alpha0 = 1.10772, alphaP = 0.06, B0 = 5.5"
