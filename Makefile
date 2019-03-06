@@ -9,7 +9,7 @@ LHALIBS = $(LHAdir)/lib
 LHAINC  = $(LHAdir)/include
 endif
 
-DPDFset.so: DPDFset.cc DPDFset.h
+libDPDFset.so: DPDFset.cc DPDFset.h
 	g++ -shared -O2 -g $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ -fPIC
 
 testDPDF: testDPDF.cc DPDFset.o 
