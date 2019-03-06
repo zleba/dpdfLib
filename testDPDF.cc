@@ -168,8 +168,15 @@ void checkZEUS()
 
 int main()
 {
-    check2006();
+    //check2006();
     //checkZEUS();
+
+    DPDFset dpdf("lhaTest_pom", "lhaTest_reg");
+    double z = 4.037018e-02, q2 = pow(5.656854e+00,2), xp = 0.01, tAbs = 0.3;
+    int imem = 0, id = 0;
+    double newVal = dpdf.zfzQ2xp(imem, id, z, q2, xp, 0, tAbs);
+    cout << newVal << endl;
+
 
 
     return 0;

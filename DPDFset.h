@@ -12,28 +12,28 @@
 #include <functional>
 
 
-using namespace LHAPDF;
-using namespace std;
+//using namespace LHAPDF;
+//using namespace std;
 
 class DPDF {
 
     public:
-        DPDF(PDF *pdf_);
+        DPDF(LHAPDF::PDF *pdf_);
 
         double 	zfzQ2xpt(int id, double z, double q2, double xp, double tAbs) const;
         double 	zfzQxpt(int id, double z, double q2, double xp, double tAbs) const;
         double 	zfzQ2xp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
-        void 	zfzQ2xp (double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const;
+        void 	zfzQ2xp (double z, double q2, double xp, double tAbsMin, double tAbsMax, std::vector<double> &zfz) const;
 
         double 	flux(double xp, double tAbs) const;
         double 	fluxInt(double xp, double tAbsMin, double tAbsMax) const;
 
-        PDF *getPDF() { return pdf;}
+        LHAPDF::PDF *getPDF() { return pdf;}
 
     private:
-        PDF *pdf;
+        LHAPDF::PDF *pdf;
         double norm;
         std::function<double(double,double)>         flx;    //Flux function
         std::function<double(double,double,double)>  flxInt; //Integrated flux
@@ -42,9 +42,9 @@ class DPDF {
 class DPDFset {
 
     public:
-        DPDFset(string sn1, string sn2="", string sn3="") { init(sn1, sn2, sn3); }
+        DPDFset(std::string sn1, std::string sn2="", std::string sn3="") { init(sn1, sn2, sn3); }
         DPDFset() {}
-        void init(string sn1, string sn2="", string sn3="");
+        void init(std::string sn1, std::string sn2="", std::string sn3="");
         
         //xfxQ2(int id, double x, double q2, double xpom, double t);
 
@@ -53,18 +53,18 @@ class DPDFset {
         double 	zfzQ2xp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
         double 	zfzQxp(int iMem, int id, double z, double q2, double xp, double tAbsMin, double tAbsMax) const;
 
-        void 	zfzQ2xp (int iMem, double z, double q2, double xp, double tAbsMin, double tAbsMax, vector<double> &zfz) const;
+        void 	zfzQ2xp (int iMem, double z, double q2, double xp, double tAbsMin, double tAbsMax, std::vector<double> &zfz) const;
 
 
-        PDF *getPDF(int iRegge, int iMem)  { return dpdfs[iRegge][iMem].getPDF(); }
+        LHAPDF::PDF *getPDF(int iRegge, int iMem)  { return dpdfs[iRegge][iMem].getPDF(); }
         DPDF *getDPDF(int iRegge, int iMem) { return &dpdfs[iRegge][iMem]; }
         
         size_t size() const {if(dpdfs.size() > 0) return dpdfs[0].size();  else return 0;}
 
     private:
-        vector<string> setNames;
+        std::vector<std::string> setNames;
         //Vector over regge trajectories & error eigen vectors
-        vector<vector<DPDF>> dpdfs;
+        std::vector<std::vector<DPDF>> dpdfs;
 
 
 };
