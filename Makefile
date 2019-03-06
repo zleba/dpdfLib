@@ -12,6 +12,6 @@ endif
 libDPDFset.so: DPDFset.cc DPDFset.h
 	g++ -shared -O2 -g $(CFLAGS)  -I$(LHAINC)  DPDFset.cc   -o $@ -fPIC
 
-testDPDF: testDPDF.cc DPDFset.o 
+testDPDF: testDPDF.cc libDPDFset.so 
 	g++ -g $(CFLAGS)  -I$(LHAINC) -IstandAlone/zeuspdf/lib  $^  standAlone/dpdf2006.o standAlone/dpdf2007.o   -L$(LHALIBS) -lLHAPDF -Wl,-rpath=$(LHALIBS)   -LstandAlone/zeuspdf/lib  -lzdpdf09    -o $@  -lgfortran
 
